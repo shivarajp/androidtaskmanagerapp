@@ -8,12 +8,15 @@ import android.view.Menu
 import android.view.MenuItem
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.masai.taskmanagerapp.adapter.TasksAdapter
+import com.masai.taskmanagerapp.database.DatabaseHandler
+import com.masai.taskmanagerapp.models.Task
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {
 
     lateinit var taskAdapter:TasksAdapter
-    private val tasksList = mutableListOf<String>()
+    private val tasksList = mutableListOf<Task>()
+    val dbHandler = DatabaseHandler(this)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -21,17 +24,17 @@ class MainActivity : AppCompatActivity() {
         setSupportActionBar(findViewById(R.id.toolbar))
 
         findViewById<FloatingActionButton>(R.id.fab).setOnClickListener { view ->
-            Snackbar.make(view, "Hello", Snackbar.LENGTH_LONG)
-                    .setAction("Action", null).show()
+            dbHandler.insertTask("Buy Milk", "Buy fresh")
+            tasksList.clear()
+            tasksList.addAll(dbHandler.getAllTasks())
+            taskAdapter.notifyDataSetChanged()
         }
-        tasksList.add("task1")
-        tasksList.add("task2")
+
+        tasksList.addAll(dbHandler.getAllTasks())
 
         taskAdapter = TasksAdapter(this, tasksList)
         recyclerview.layoutManager = LinearLayoutManager(this)
         recyclerview.adapter = taskAdapter
-
-
     }
 
 }

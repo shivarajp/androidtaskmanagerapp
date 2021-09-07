@@ -8,8 +8,9 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.masai.taskmanagerapp.R
+import com.masai.taskmanagerapp.models.Task
 
-class TasksAdapter(val context: Context, val tasksList: MutableList<String>) : RecyclerView.Adapter<TasksAdapter.TaskViewHolder>() {
+class TasksAdapter(val context: Context, val tasksList: MutableList<Task>) : RecyclerView.Adapter<TasksAdapter.TaskViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TaskViewHolder {
         val inflater = LayoutInflater.from(context)
@@ -20,8 +21,8 @@ class TasksAdapter(val context: Context, val tasksList: MutableList<String>) : R
 
     override fun onBindViewHolder(holder: TaskViewHolder, position: Int) {
         val task = tasksList.get(position)
-        holder.title.text = task
-        holder.desc.text = task
+        holder.title.text = task.tite
+        holder.desc.text = task.desc
 
     }
 
