@@ -7,12 +7,13 @@ import androidx.appcompat.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.masai.taskmanagerapp.adapter.OnTaskItemClicked
 import com.masai.taskmanagerapp.adapter.TasksAdapter
 import com.masai.taskmanagerapp.database.DatabaseHandler
 import com.masai.taskmanagerapp.models.Task
 import kotlinx.android.synthetic.main.activity_main.*
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), OnTaskItemClicked {
 
     lateinit var taskAdapter:TasksAdapter
     private val tasksList = mutableListOf<Task>()
@@ -25,16 +26,37 @@ class MainActivity : AppCompatActivity() {
 
         findViewById<FloatingActionButton>(R.id.fab).setOnClickListener { view ->
             dbHandler.insertTask("Buy Milk", "Buy fresh")
-            tasksList.clear()
-            tasksList.addAll(dbHandler.getAllTasks())
-            taskAdapter.notifyDataSetChanged()
+            updateUI()
         }
 
         tasksList.addAll(dbHandler.getAllTasks())
 
-        taskAdapter = TasksAdapter(this, tasksList)
+        taskAdapter = TasksAdapter(this, tasksList, this)
         recyclerview.layoutManager = LinearLayoutManager(this)
         recyclerview.adapter = taskAdapter
+    }
+
+    override fun onEditClicked(task: Task) {
+        val newTitle = "New title"
+        val newDesc = "New Desc"
+
+        task.tite = newTitle
+        task.desc = newDesc
+
+        dbHandler.editTask(task)
+        updateUI()
+    }
+
+    override fun onDeleteClicked(task: Task) {
+        dbHandler.deleteTask(task)
+        updateUI()
+    }
+
+    fun updateUI(){
+        val latestTasks = dbHandler.getAllTasks()
+        tasksList.clear()
+        tasksList.addAll(latestTasks)
+        taskAdapter.notifyDataSetChanged()
     }
 
 }

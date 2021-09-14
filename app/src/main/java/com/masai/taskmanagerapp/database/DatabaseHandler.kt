@@ -56,7 +56,7 @@ class DatabaseHandler(val context: Context) :
 
         val cursor = db?.rawQuery(query, null)
 
-        if(cursor != null){
+        if(cursor != null && cursor.count > 0){
             cursor.moveToFirst()
 
             do {
@@ -74,6 +74,32 @@ class DatabaseHandler(val context: Context) :
             } while (cursor.moveToNext())
         }
         return taskList
+    }
+
+    fun editTask(task: Task){
+        val db = writableDatabase
+        val contentValues = ContentValues()
+        contentValues.put(TITLE, task.tite)
+        contentValues.put(DESC, task.desc)
+
+        val result = db.update(TABLE_NAME, contentValues, "id = ${task.id}" , null)
+
+        if (result == 1){
+            Toast.makeText(context, "Task Updated", Toast.LENGTH_LONG).show()
+        }else{
+            Toast.makeText(context, "Failed to Update", Toast.LENGTH_LONG).show()
+        }
+    }
+
+
+    fun deleteTask(task: Task){
+        val db = writableDatabase
+        val result = db.delete(TABLE_NAME, "id=${task.id}", null)
+        if (result == 1){
+            Toast.makeText(context, "Task Deleted", Toast.LENGTH_LONG).show()
+        }else{
+            Toast.makeText(context, "Failed to delete", Toast.LENGTH_LONG).show()
+        }
     }
 
 
