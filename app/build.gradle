@@ -36,6 +36,7 @@ android {
 
 dependencies {
     def anko_version = '0.10.0'
+    def jetpack_version = "2.1.0"
 
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
     implementation 'androidx.core:core-ktx:1.6.0'
@@ -50,4 +51,7 @@ dependencies {
 
     //Anko
     implementation "org.jetbrains.anko:anko-commons:$anko_version"
+    //Room
+    implementation 'androidx.room:room-ktx:2.1.0'
+    kapt 'androidx.room:room-compiler:2.1.0'
 }

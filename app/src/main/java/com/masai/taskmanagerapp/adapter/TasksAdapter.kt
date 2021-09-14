@@ -24,7 +24,7 @@ class TasksAdapter(val context: Context,
 
     override fun onBindViewHolder(holder: TaskViewHolder, position: Int) {
         val task = tasksList.get(position)
-        holder.title.text = task.tite
+        holder.title.text = task.title
         holder.desc.text = task.desc
 
         holder.editTv.setOnClickListener {
