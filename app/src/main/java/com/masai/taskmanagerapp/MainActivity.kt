@@ -67,7 +67,7 @@ class MainActivity : AppCompatActivity(), OnTaskItemClicked {
         recyclerview.layoutManager = LinearLayoutManager(this)
         recyclerview.adapter = taskAdapter
 
-        taskDao.getTasks("hello").observe(this@MainActivity, Observer {
+        taskDao.getTasks().observe(this@MainActivity, Observer {
             val tasks = it
             tasksList.clear()
             tasksList.addAll(tasks)
@@ -80,10 +80,18 @@ class MainActivity : AppCompatActivity(), OnTaskItemClicked {
         val newTitle = "New title"
         val newDesc = "New Desc"
 
+        task.title = newTitle
+        task.desc = newDesc
+
+        CoroutineScope(Dispatchers.IO).launch {
+            taskDao.updateTask(task)
+        }
     }
 
     override fun onDeleteClicked(task: Task) {
-
+        CoroutineScope(Dispatchers.IO).launch {
+            taskDao.delete(task)
+        }
     }
 
 }

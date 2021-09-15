@@ -1,10 +1,7 @@
 package com.masai.taskmanagerapp.models
 
 import androidx.lifecycle.LiveData
-import androidx.room.Dao
-import androidx.room.Insert
-import androidx.room.OnConflictStrategy
-import androidx.room.Query
+import androidx.room.*
 
 @Dao
 interface TaskappDAO {
@@ -12,7 +9,13 @@ interface TaskappDAO {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun addTask(task: Task)
 
-    @Query("select * from tasks where title = :search")
-    fun getTasks(search: String): LiveData<List<Task>>
+    @Query("select * from tasks")
+    fun getTasks(): LiveData<List<Task>>
+
+    @Update
+    fun updateTask(task: Task)
+
+    @Delete
+    fun delete(task: Task)
 
 }
