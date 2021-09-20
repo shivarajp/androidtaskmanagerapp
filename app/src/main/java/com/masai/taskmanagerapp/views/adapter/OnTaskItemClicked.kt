@@ -1,4 +1,4 @@
-package com.masai.taskmanagerapp.adapter
+package com.masai.taskmanagerapp.views.adapter
 
 import com.masai.taskmanagerapp.models.Task
 

@@ -1,19 +1,20 @@
-package com.masai.taskmanagerapp
+package com.masai.taskmanagerapp.views.adapter
 
 import android.os.Bundle
 import com.google.android.material.floatingactionbutton.FloatingActionButton
-import com.google.android.material.snackbar.Snackbar
 import androidx.appcompat.app.AppCompatActivity
-import android.view.Menu
-import android.view.MenuItem
 import androidx.lifecycle.Observer
-import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProviders
+
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.masai.taskmanagerapp.adapter.OnTaskItemClicked
-import com.masai.taskmanagerapp.adapter.TasksAdapter
+import com.masai.taskmanagerapp.R
 import com.masai.taskmanagerapp.models.Task
 import com.masai.taskmanagerapp.models.TaskRoomDatabase
 import com.masai.taskmanagerapp.models.TaskappDAO
+import com.masai.taskmanagerapp.repository.TaskRepo
+import com.masai.taskmanagerapp.viewmodels.TaskViewModel
+import com.masai.taskmanagerapp.viewmodels.TaskViewModelFactory
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -26,6 +27,7 @@ class MainActivity : AppCompatActivity(), OnTaskItemClicked {
 
     lateinit var roomDb: TaskRoomDatabase
     lateinit var taskDao: TaskappDAO
+    lateinit var viewModel: TaskViewModel
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -34,6 +36,13 @@ class MainActivity : AppCompatActivity(), OnTaskItemClicked {
         setSupportActionBar(findViewById(R.id.toolbar))
         roomDb = TaskRoomDatabase.getDatabaseObject(this)
         taskDao = roomDb.getTaskDAO()
+        val repo = TaskRepo(taskDao)
+        val viewModelFactory = TaskViewModelFactory(repo)
+
+        viewModel = ViewModelProviders.of(this, viewModelFactory)
+            .get(TaskViewModel::class.java)
+
+
         /**
 
         @entity
@@ -57,9 +66,7 @@ class MainActivity : AppCompatActivity(), OnTaskItemClicked {
 
         findViewById<FloatingActionButton>(R.id.fab).setOnClickListener { view ->
             val newTask = Task("Dummy ttile", "Dummy desc")
-            CoroutineScope(Dispatchers.IO).launch {
-                taskDao.addTask(newTask)
-            }
+            viewModel.addTask(newTask)
         }
 
 
@@ -67,31 +74,25 @@ class MainActivity : AppCompatActivity(), OnTaskItemClicked {
         recyclerview.layoutManager = LinearLayoutManager(this)
         recyclerview.adapter = taskAdapter
 
-        taskDao.getTasks().observe(this@MainActivity, Observer {
-            val tasks = it
+        viewModel.getTasks().observe(this, Observer {
             tasksList.clear()
-            tasksList.addAll(tasks)
+            tasksList.addAll(it)
             taskAdapter.notifyDataSetChanged()
         })
-
     }
 
     override fun onEditClicked(task: Task) {
         val newTitle = "New title"
         val newDesc = "New Desc"
-
         task.title = newTitle
         task.desc = newDesc
 
-        CoroutineScope(Dispatchers.IO).launch {
-            taskDao.updateTask(task)
-        }
+        viewModel.updateTask(task)
     }
 
     override fun onDeleteClicked(task: Task) {
-        CoroutineScope(Dispatchers.IO).launch {
-            taskDao.delete(task)
-        }
+        viewModel.delete(task)
+
     }
 
 }
