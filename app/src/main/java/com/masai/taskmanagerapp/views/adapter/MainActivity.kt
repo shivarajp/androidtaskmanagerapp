@@ -4,21 +4,21 @@ import android.os.Bundle
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProviders
 
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.masai.taskmanagerapp.R
-import com.masai.taskmanagerapp.models.Task
-import com.masai.taskmanagerapp.models.TaskRoomDatabase
-import com.masai.taskmanagerapp.models.TaskappDAO
+import com.masai.taskmanagerapp.models.local.Task
+import com.masai.taskmanagerapp.models.local.TaskRoomDatabase
+import com.masai.taskmanagerapp.models.local.TaskappDAO
+import com.masai.taskmanagerapp.models.remote.Status
+import com.masai.taskmanagerapp.models.remote.requests.LoginRequestModel
 import com.masai.taskmanagerapp.repository.TaskRepo
 import com.masai.taskmanagerapp.viewmodels.TaskViewModel
 import com.masai.taskmanagerapp.viewmodels.TaskViewModelFactory
 import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
+import org.jetbrains.anko.longToast
+import org.jetbrains.anko.toast
 
 class MainActivity : AppCompatActivity(), OnTaskItemClicked {
 
@@ -41,6 +41,34 @@ class MainActivity : AppCompatActivity(), OnTaskItemClicked {
 
         viewModel = ViewModelProviders.of(this, viewModelFactory)
             .get(TaskViewModel::class.java)
+
+        val loginRequestModel = LoginRequestModel(password = "dhankhar", userName = "pradeep1706108@gmail.com",
+            )
+
+        viewModel.userLogin(loginRequestModel).observe(this, Observer {
+            val response = it
+
+            when (response.status) {
+
+                Status.SUCCESS -> {
+                    val name = response.data?.user?.name!!
+                    val email = response.data?.user?.email!!
+
+                    longToast("$name and $email")
+                }
+
+                Status.ERROR -> {
+                    val error = response.message!!
+                    longToast("error = $error")
+                }
+
+                Status.LOADING -> {
+
+                }
+
+            }
+
+        })
 
 
         /**

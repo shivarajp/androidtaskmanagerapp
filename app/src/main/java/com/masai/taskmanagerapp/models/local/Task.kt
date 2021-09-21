@@ -1,4 +1,4 @@
-package com.masai.taskmanagerapp.models
+package com.masai.taskmanagerapp.models.local
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity

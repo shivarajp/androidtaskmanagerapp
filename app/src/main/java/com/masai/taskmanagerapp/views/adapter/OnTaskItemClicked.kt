@@ -1,6 +1,6 @@
 package com.masai.taskmanagerapp.views.adapter
 
-import com.masai.taskmanagerapp.models.Task
+import com.masai.taskmanagerapp.models.local.Task
 
 interface OnTaskItemClicked {
 
