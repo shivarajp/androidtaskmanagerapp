@@ -1,6 +1,9 @@
 package com.masai.taskmanagerapp.models.remote
 
 import com.masai.taskmanagerapp.models.remote.requests.LoginRequestModel
+import com.masai.taskmanagerapp.models.remote.responses.CreateTaskResponseModel
+import com.masai.taskmanagerapp.models.remote.responses.CreatetaskRequestModel
+import com.masai.taskmanagerapp.models.remote.responses.GetTasksResponseModel
 import com.masai.taskmanagerapp.models.remote.responses.LoginResponse
 import retrofit2.http.*
 
@@ -8,10 +11,22 @@ import retrofit2.http.*
 interface TasksAPI {
 
     //@Headers("Accept: application/json")
-    @POST("login")
+    @POST("users/login")
     suspend fun login(
         @Body loginRequest: LoginRequestModel
     ): LoginResponse
+
+
+    @GET("tasks")
+    suspend fun getTasksFromAPI(
+        @Header("Authorization") token: String
+    ) : GetTasksResponseModel
+
+    @POST("tasks")
+    suspend fun createTask(
+        @Header("Authorization") token: String,
+        @Body createtaskRequestModel: CreatetaskRequestModel
+    ): CreateTaskResponseModel
 
 
     /*@POST("/v2/courses/new")

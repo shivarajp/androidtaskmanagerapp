@@ -11,14 +11,12 @@ import com.masai.taskmanagerapp.R
 import com.masai.taskmanagerapp.models.local.Task
 import com.masai.taskmanagerapp.models.local.TaskRoomDatabase
 import com.masai.taskmanagerapp.models.local.TaskappDAO
-import com.masai.taskmanagerapp.models.remote.Status
 import com.masai.taskmanagerapp.models.remote.requests.LoginRequestModel
+import com.masai.taskmanagerapp.models.remote.responses.CreatetaskRequestModel
 import com.masai.taskmanagerapp.repository.TaskRepo
 import com.masai.taskmanagerapp.viewmodels.TaskViewModel
 import com.masai.taskmanagerapp.viewmodels.TaskViewModelFactory
 import kotlinx.android.synthetic.main.activity_main.*
-import org.jetbrains.anko.longToast
-import org.jetbrains.anko.toast
 
 class MainActivity : AppCompatActivity(), OnTaskItemClicked {
 
@@ -42,10 +40,14 @@ class MainActivity : AppCompatActivity(), OnTaskItemClicked {
         viewModel = ViewModelProviders.of(this, viewModelFactory)
             .get(TaskViewModel::class.java)
 
-        val loginRequestModel = LoginRequestModel(password = "dhankhar", userName = "pradeep1706108@gmail.com",
-            )
+        val loginRequestModel = LoginRequestModel(
+            password = "dhankhar", userName = "pradeep1706108@gmail.com",
+        )
 
-        viewModel.userLogin(loginRequestModel).observe(this, Observer {
+        val sharedPref = getSharedPreferences("com.masai.taskmanager", MODE_PRIVATE)
+
+
+        /*viewModel.userLogin(loginRequestModel).observe(this, Observer {
             val response = it
 
             when (response.status) {
@@ -53,6 +55,12 @@ class MainActivity : AppCompatActivity(), OnTaskItemClicked {
                 Status.SUCCESS -> {
                     val name = response.data?.user?.name!!
                     val email = response.data?.user?.email!!
+
+                    //Save token into shared pref
+                    sharedPref.edit().putString("token", response.data?.token).apply()
+
+                    //Get data form shared pref
+                    val token = sharedPref.getString("token", "")
 
                     longToast("$name and $email")
                 }
@@ -68,7 +76,7 @@ class MainActivity : AppCompatActivity(), OnTaskItemClicked {
 
             }
 
-        })
+        })*/
 
 
         /**
@@ -93,20 +101,29 @@ class MainActivity : AppCompatActivity(), OnTaskItemClicked {
 
 
         findViewById<FloatingActionButton>(R.id.fab).setOnClickListener { view ->
-            val newTask = Task("Dummy ttile", "Dummy desc")
-            viewModel.addTask(newTask)
-        }
+            val createtaskRequestModel = CreatetaskRequestModel(
+                description = "desc",
+                status = 0,
+                title = "title"
+            )
 
+            viewModel.createNewTask(createtaskRequestModel)
+        }
 
         taskAdapter = TasksAdapter(this, tasksList, this)
         recyclerview.layoutManager = LinearLayoutManager(this)
         recyclerview.adapter = taskAdapter
 
-        viewModel.getTasks().observe(this, Observer {
+
+        viewModel.getTasksFromDB().observe(this, Observer {
             tasksList.clear()
             tasksList.addAll(it)
+            tasksList.reverse()
             taskAdapter.notifyDataSetChanged()
         })
+
+        viewModel.getTasksFromAPI()
+
     }
 
     override fun onEditClicked(task: Task) {

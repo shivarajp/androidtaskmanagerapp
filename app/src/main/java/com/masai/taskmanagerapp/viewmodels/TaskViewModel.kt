@@ -6,6 +6,7 @@ import androidx.lifecycle.liveData
 import com.masai.taskmanagerapp.models.local.Task
 import com.masai.taskmanagerapp.models.remote.Resource
 import com.masai.taskmanagerapp.models.remote.requests.LoginRequestModel
+import com.masai.taskmanagerapp.models.remote.responses.CreatetaskRequestModel
 import com.masai.taskmanagerapp.models.remote.responses.LoginResponse
 import com.masai.taskmanagerapp.repository.TaskRepo
 import kotlinx.coroutines.CoroutineScope
@@ -26,11 +27,19 @@ class TaskViewModel(val repo: TaskRepo) : ViewModel() {
         return liveData
     }
 
+    fun getTasksFromAPI(){
+        repo.getRemoteTasks()
+    }
+
+    fun createNewTask(createtaskRequestModel: CreatetaskRequestModel){
+        repo.createTask(createtaskRequestModel)
+    }
+
     fun addTask(task: Task){
         repo.addTaskToRoom(task)
     }
 
-    fun getTasks(): LiveData<List<Task>> {
+    fun getTasksFromDB(): LiveData<List<Task>> {
         return repo.getAllTasks()
     }
 

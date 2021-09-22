@@ -9,6 +9,9 @@ interface TaskappDAO {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun addTask(task: Task)
 
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun addTasks(tasks: ArrayList<Task>)
+
     @Query("select * from tasks")
     fun getTasks(): LiveData<List<Task>>
 
@@ -17,5 +20,8 @@ interface TaskappDAO {
 
     @Delete
     fun delete(task: Task)
+
+    @Query("delete from tasks")
+    fun deleteAll()
 
 }
