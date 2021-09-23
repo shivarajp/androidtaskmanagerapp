@@ -15,7 +15,7 @@ abstract class TaskRoomDatabase : RoomDatabase() {
 
         private var INSTANCE: TaskRoomDatabase? = null
 
-        fun getDatabaseObject(context: Context): TaskRoomDatabase {
+        /*fun getDatabaseObject(context: Context): TaskRoomDatabase {
 
             if (INSTANCE == null) {
                 val builder = Room.databaseBuilder(
@@ -31,7 +31,7 @@ abstract class TaskRoomDatabase : RoomDatabase() {
             } else {
                 return INSTANCE!!
             }
-        }
+        }*/
 
     }
 

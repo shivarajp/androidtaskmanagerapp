@@ -15,10 +15,13 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.lang.Exception
+import javax.inject.Inject
+import javax.inject.Singleton
 
-class TaskRepo(private val taskDAO: TaskappDAO) {
+@Singleton
+class TaskRepo @Inject constructor(val taskDAO: TaskappDAO) {
 
-    private val api: TasksAPI = Network.getRetrofit().create(TasksAPI::class.java)
+    @Inject lateinit var api: TasksAPI //= Network.getRetrofit().create(TasksAPI::class.java)
     private val responseHandler = ResponseHandler()
     private val token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2MGE0YmI3OTAzMjdlN2MwNmE2MTk1ODYiLCJpYXQiOjE2MzIxMzg2ODR9.cTxpYQrTfvramIOSPih6b1hJO_x1G-V2GmaRnTYSjU0"
 

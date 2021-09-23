@@ -1,10 +1,10 @@
 package com.masai.taskmanagerapp.views.adapter
 
 import android.os.Bundle
+import androidx.activity.viewModels
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
 
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.masai.taskmanagerapp.R
@@ -15,9 +15,10 @@ import com.masai.taskmanagerapp.models.remote.requests.LoginRequestModel
 import com.masai.taskmanagerapp.models.remote.responses.CreatetaskRequestModel
 import com.masai.taskmanagerapp.repository.TaskRepo
 import com.masai.taskmanagerapp.viewmodels.TaskViewModel
-import com.masai.taskmanagerapp.viewmodels.TaskViewModelFactory
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.activity_main.*
 
+@AndroidEntryPoint
 class MainActivity : AppCompatActivity(), OnTaskItemClicked {
 
     lateinit var taskAdapter: TasksAdapter
@@ -25,20 +26,17 @@ class MainActivity : AppCompatActivity(), OnTaskItemClicked {
 
     lateinit var roomDb: TaskRoomDatabase
     lateinit var taskDao: TaskappDAO
-    lateinit var viewModel: TaskViewModel
+    val viewModel: TaskViewModel by viewModels()
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         setSupportActionBar(findViewById(R.id.toolbar))
-        roomDb = TaskRoomDatabase.getDatabaseObject(this)
-        taskDao = roomDb.getTaskDAO()
-        val repo = TaskRepo(taskDao)
-        val viewModelFactory = TaskViewModelFactory(repo)
 
-        viewModel = ViewModelProviders.of(this, viewModelFactory)
-            .get(TaskViewModel::class.java)
+
+        /*viewModel = ViewModelProviders.of(this, viewModelFactory)
+            .get(TaskViewModel::class.java)*/
 
         val loginRequestModel = LoginRequestModel(
             password = "dhankhar", userName = "pradeep1706108@gmail.com",
