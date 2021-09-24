@@ -24,7 +24,7 @@ object TaskModule {
      */
     @Singleton
     @Provides
-    fun provideNewsService(): TasksAPI {
+    fun provideTasksAPIService(): TasksAPI {
         return Retrofit.Builder()
             .baseUrl("http://13.232.169.202:8080/")
             .addConverterFactory(GsonConverterFactory.create())
@@ -39,15 +39,15 @@ object TaskModule {
     @Singleton
     @Provides
     fun provideDb(@ApplicationContext context: Context): TaskRoomDatabase =
-        Room.databaseBuilder(context, TaskRoomDatabase::class.java, "news-db")
+        Room.databaseBuilder(context, TaskRoomDatabase::class.java, "tasks-db")
             .fallbackToDestructiveMigration().build()
 
 
     /**
-     * Provides NewsArticlesDao an object to access NewsArticles table from Database
+     * Provides TasksDao an object to access NewsArticles table from Database
      */
     @Singleton
     @Provides
-    fun provideUserDao(db: TaskRoomDatabase): TaskappDAO = db.getTaskDAO()
+    fun provideTasksDao(db: TaskRoomDatabase): TaskappDAO = db.getTaskDAO()
 
     }
